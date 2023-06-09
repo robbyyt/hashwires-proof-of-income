@@ -1,0 +1,15 @@
+[package]
+name = "provider"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "0.2", features = ["macros"] }
+serde_json = "1.0"
+hashwires = "0.1.0"
+num-bigint = "0.4.3"
+rand_core = "0.6.4"
+
+[dependencies.blake3]
+version = "0.3.7"
+features = ["rayon"]

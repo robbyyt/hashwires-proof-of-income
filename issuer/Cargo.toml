@@ -1,0 +1,21 @@
+[package]
+name = "issuer"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+tokio = { version = "1", features = ["macros"] }
+tracing = { version = "0.1", features = ["log"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = ["ansi", "fmt"] }
+hashwires = "0.1.0"
+num-bigint = "0.4.3"
+rand_core = "0.6.4"
+lambda_http = "0.8.0"
+axum = "0.6.18"
+serde = "1.0.164"
+cargo-lambda = "0.19.3"
+
+[dependencies.blake3]
+version = "0.3.7"
+features = ["rayon"]
