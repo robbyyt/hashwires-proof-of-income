@@ -41,7 +41,7 @@ async fn issue_income(
     Path(name): Path<String>,
     Json(Body { threshold }): Json<Body>,
 ) -> impl IntoResponse {
-    if name != "bob" || name != "alice" {
+    if name != "bob" && name != "alice" {
         let error_response = ErrorResponse {
             error: "Name must be bob or alice".to_string(),
         };
@@ -51,8 +51,11 @@ async fn issue_income(
         );
     }
     if threshold > 0 {
-        let threshold = BigUint::from(900u32);
-        let (commitment_bytes, proof_bytes) = generate_proof_and_commitment(1000, &threshold);
+        let casted_threshold = BigUint::from(threshold);
+        let value = if name == "alice" { 2000 } else { 1000 };
+
+        let (commitment_bytes, proof_bytes) =
+            generate_proof_and_commitment(value, &casted_threshold);
         let response = Response {
             commitment: commitment_bytes,
             proof: proof_bytes,

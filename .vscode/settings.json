@@ -1,6 +1,0 @@
-{
-  "rust-analyzer.linkedProjects": [
-    "./issuer/Cargo.toml"
-  ],
-  "rust-analyzer.showUnlinkedFileNotification": false
-}
