@@ -9,6 +9,7 @@ use lambda_http::{run, Error};
 use num_bigint::BigUint;
 use provider::verify_proof_and_commitment;
 use serde::{Deserialize, Serialize};
+use tower_http::cors::{Any, CorsLayer};
 
 #[derive(Deserialize)]
 struct Request {
@@ -47,6 +48,9 @@ async fn main() -> Result<(), Error> {
         // disabling time is handy because CloudWatch will add the ingestion time.
         .without_time()
         .init();
-    let app = Router::new().route("/verify", post(verify_income));
+    let cors = CorsLayer::new().allow_origin(Any).allow_headers(Any);
+    let app = Router::new()
+        .route("/verify", post(verify_income))
+        .layer(cors);
     run(app).await
 }

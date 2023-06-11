@@ -10,6 +10,7 @@ use axum::{
     routing::post,
     Router,
 };
+use tower_http::cors::{Any, CorsLayer};
 
 use lambda_http::{run, Error};
 use serde::{Deserialize, Serialize};
@@ -87,7 +88,10 @@ async fn main() -> Result<(), Error> {
         .without_time()
         .init();
 
-    let app = Router::new().route("/prove/:name", post(issue_income));
+    let cors = CorsLayer::new().allow_origin(Any).allow_headers(Any);
+    let app = Router::new()
+        .route("/prove/:name", post(issue_income))
+        .layer(cors);
 
     run(app).await
 }
