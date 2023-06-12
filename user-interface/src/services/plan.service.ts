@@ -11,10 +11,7 @@ const getIncomeProof = async (account: TAccount, threshold: number) => {
     return (await axios.post<{ commitment: number[], proof: number[] }>(`${ISSUER_API_ENDPOINT}/${account.toLowerCase()}`, { threshold })).data
   } catch(err) {
     if(err instanceof AxiosError) {
-      if(err.status === 502) throw new IssuerException('Threshold too high for proof.')
-      else {
-        throw new IssuerException(err.message);
-      }
+      throw new IssuerException(err.response?.data?.error);
     }
     throw new IssuerException('Unknown error');
   }

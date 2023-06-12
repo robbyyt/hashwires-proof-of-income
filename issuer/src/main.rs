@@ -55,6 +55,16 @@ async fn issue_income(
         let casted_threshold = BigUint::from(threshold);
         let value = if name == "alice" { 2000 } else { 1000 };
 
+        if threshold > value {
+            let error_response = ErrorResponse {
+                error: "Cannot generate income proof".to_string(),
+            };
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(ApiResponse::Error(error_response)),
+            );
+        }
+
         let (commitment_bytes, proof_bytes) =
             generate_proof_and_commitment(value, &casted_threshold);
         let response = Response {

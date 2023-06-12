@@ -1,8 +1,11 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Tab } from '@headlessui/react'
 import { classNames } from '../../../utils/styles'
 import { TAccount, useAccountContext } from '../../../context/account'
 import { applyForPlan } from '../../../services/plan.service'
+import { useError } from '../../../context/error'
+import { IssuerException, ProviderException } from '../../../exception'
+import SuccessAlert from '../SuccessAlert'
 
 const plans = [
   {
@@ -27,16 +30,24 @@ const plans = [
 
 export default function PlanSelect() {
   const { account } = useAccountContext();
+  const [success, setSuccess] = useState(false);
+  const { setError } = useError();
 
   const handleApplication = useCallback(async (account: TAccount, threshold: number) => {
     try {
       await applyForPlan(account, threshold);
+      setSuccess(true);
     } catch(err) {
-      console.log('Err');
+      if(err instanceof IssuerException || err instanceof ProviderException) {
+        setError(err); 
+      } else {
+        setError(new Error('Unknown error'));
+      }
     }
-  }, []);
+  }, [setError]);
 
   return (
+    <>
     <div className="w-full max-w-md px-2 py-16 sm:px-0">
       <Tab.Group>
         <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
@@ -68,11 +79,16 @@ export default function PlanSelect() {
               )}
             >
               <p>{plan.description}</p>
-              <button onClick={() => handleApplication(account, plan.threshold)}>Apply</button>
+              {(plan.threshold > 0 && !success) && <button onClick={() => handleApplication(account, plan.threshold)} className='bg-blue-500 mt-2 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'>Apply</button>}
             </Tab.Panel>
           ))}
         </Tab.Panels>
       </Tab.Group>
+      <div className='flex flex-col items-center'>
+      {success && <SuccessAlert />}
+      {success && <button onClick={() => setSuccess(false)} className='bg-red-500 mt-2 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full max-w-[100px]'>Reset</button>}
+      </div>
     </div>
+    </>
   )
 }
