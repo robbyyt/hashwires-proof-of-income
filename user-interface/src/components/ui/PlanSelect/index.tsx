@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Tab } from '@headlessui/react'
 import { classNames } from '../../../utils/styles'
 import { TAccount, useAccountContext } from '../../../context/account'
@@ -45,6 +45,11 @@ export default function PlanSelect() {
       }
     }
   }, [setError]);
+
+  useEffect(() => {
+    setSuccess(false);
+    setError(null);
+  }, [account, setError, setSuccess]);
 
   return (
     <>
